@@ -45,37 +45,16 @@ def processRequest(req):
     # yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
     # result = urlopen(yql_url).read()
     # data = json.loads(result)
-    res = makeWebhookResult("I think you should try the %s %s %s that I found on example.com" % (parameters.get("protein"), parameters.get("vegetable"), parameters.get("dish-type")))
+    res = makeWebhookResult("I think you should try the %s %s %s that I found on example.com" \
+        % (','.join((parameters.get("protein"))),
+        ', '.join(parameters.get("vegetable")),
+        parameters.get("dish-type")))
     return res
 
 def makeWebhookResult(data):
-    query = data.get('query')
-    if query is None:
-        return {}
-
-    result = query.get('results')
-    if result is None:
-        return {}
-
-    channel = result.get('channel')
-    if channel is None:
-        return {}
-
-    item = channel.get('item')
-    location = channel.get('location')
-    units = channel.get('units')
-    if (location is None) or (item is None) or (units is None):
-        return {}
-
-    condition = item.get('condition')
-    if condition is None:
-        return {}
-
     # print(json.dumps(item, indent=4))
 
-    speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
-             ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
-
+    speech = data
     print("Response:")
     print(speech)
 
@@ -93,4 +72,4 @@ if __name__ == '__main__':
 
     print("Starting app on port %d" % port)
 
-    app.run(debug=False, port=port, host='0.0.0.0')
+    app.run(debug=True, port=port, host='0.0.0.0')
